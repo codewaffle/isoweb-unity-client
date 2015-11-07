@@ -14,8 +14,7 @@ public class SpriteComponent : ComponentBase
             switch (kvp.Key)
             {
                 case "sprite":
-                    Debug.Log(Config.AssetBase + kvp.Value.ToString());
-                    Debug.Log(Config.AssetBase[0]);
+                    Debug.Log(Config.AssetBase + kvp.Value);
                     break;
             }
         }

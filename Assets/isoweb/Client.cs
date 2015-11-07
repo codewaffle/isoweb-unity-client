@@ -154,7 +154,7 @@ public class Client : MonoBehaviour {
             switch (kvp.Key)
             {
                 case "asset_base":
-                    Config.AssetBase = kvp.Value.ToString();
+                    Config.AssetBase = kvp.Value;
                     break;
             }
         }
