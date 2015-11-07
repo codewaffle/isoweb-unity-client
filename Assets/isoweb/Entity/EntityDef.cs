@@ -23,13 +23,13 @@ public class EntityDef
     {
         foreach (KeyValuePair<string, JSONNode> kvp in _data.AsObject)
         {
-            ComponentBase c = null;
+            EntityComponent c = null;
 
             switch (kvp.Key)
             {
                 case "Sprite":
                 {
-                    c = entity.AddComponent(new SpriteComponent());
+                    c = new SpriteEntityComponent(entity);
                     break;
                 }
                 default:

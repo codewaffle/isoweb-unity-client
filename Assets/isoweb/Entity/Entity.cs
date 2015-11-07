@@ -84,7 +84,7 @@ public class Entity
         _def.Populate(this);
     }
 
-    public T AddComponent<T>(T comp) where T : ComponentBase
+    public T AddComponent<T>(T comp) where T : EntityComponent
     {
         return comp;
     }
