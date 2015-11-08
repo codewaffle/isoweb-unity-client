@@ -19,7 +19,6 @@ public class PacketBuilder
         var bytes = new []{item};
         _packet.Add(bytes);
         _length += bytes.Length;
-        Debug.Log("by " + _length);
     }
 
     public void PushUint16(ushort item)
@@ -27,7 +26,6 @@ public class PacketBuilder
         var bytes = BitConverter.GetBytes(item);
         _packet.Add(bytes);
         _length += bytes.Length;
-        Debug.Log("us " + _length);
     }
 
     void Clear()

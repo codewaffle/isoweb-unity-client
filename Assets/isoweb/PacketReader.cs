@@ -61,7 +61,6 @@ public class PacketReader
         var bytes = _data.Skip(end - idx).Take(len).Reverse().ToArray();
         var str = Encoding.UTF8.GetString(bytes);
 
-        Debug.Log("String: " + str);
         return str;
     }
 
@@ -77,10 +76,8 @@ public class PacketReader
         idx += 1;
         var len = (int) _data[end - idx];
         idx += len;
-        Debug.Log("Reading " + len + " / " + _data.Length + " bytes");
         var bytes = _data.Skip(end - idx).Take(len).Reverse().ToArray();
         var str = Encoding.UTF8.GetString(bytes);
-        Debug.Log("SmallString: " + str);
         return str;
     }
 }

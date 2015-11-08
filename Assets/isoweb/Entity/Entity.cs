@@ -36,7 +36,14 @@ public class Entity
 
     public void TakeControl()
     {
-        Debug.Log("Assuming Control");
+        if (Config.CurrentEntity != null)
+        {
+            Debug.LogError("Don't Know How To Stop Controlling Current Entity");
+        }
+
+        Config.CurrentEntity = this;
+
+        Camera.main.gameObject.GetComponent<TrackingCamera>().SetTarget(GameObject);
     }
 
     public void SetAttribute(string attr, string val)
@@ -45,6 +52,10 @@ public class Entity
         {
             case "name":
                 _name = val;
+
+                if (_gameObject != null)
+                    _gameObject.name = val;
+
                 break;
             default:
                 Debug.Log("Unknown String Attr: " + attr);

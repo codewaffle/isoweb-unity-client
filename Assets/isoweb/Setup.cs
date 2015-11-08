@@ -5,5 +5,6 @@ public class Setup : MonoBehaviour {
 	{
         EntityManager.Init();
 	    gameObject.AddComponent<Client>();
+	    var mod = Camera.main.gameObject.AddComponent<TrackingCamera>();
 	}
 }
