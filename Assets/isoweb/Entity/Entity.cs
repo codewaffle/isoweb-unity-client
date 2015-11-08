@@ -60,6 +60,10 @@ public class Entity
     public void SetParent(Entity parent)
     {
         _parent = parent;
+        if (_gameObject != null)
+        {
+            _gameObject.transform.parent = _parent.GameObject.transform;
+        }
     }
 
     public void SetDefinition(EntityDef def)
@@ -72,6 +76,9 @@ public class Entity
         _pos.Set(x, y);
         _rot = r;
         _vel.Set(velX, velY);
+        
+        GameObject.transform.position = new Vector3(x,y,0);
+        GameObject.transform.localEulerAngles = new Vector3(0, 0, _rot * Mathf.Rad2Deg);
     }
 
     public void UpdateAttributes(JSONNode attrs)
