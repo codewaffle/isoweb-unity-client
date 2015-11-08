@@ -57,4 +57,9 @@ public class PacketBuilder
         _packet.Add(bytes);
         _length += bytes.Length;
     }
+
+    public void PushPacketType(PacketType pType)
+    {
+        PushByte((byte)pType);
+    }
 }

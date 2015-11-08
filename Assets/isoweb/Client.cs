@@ -11,6 +11,14 @@ public class Client : MonoBehaviour {
     PacketBuilder pb;
     PacketReader pr;
     WebSocket webSocket;
+    private ushort _syncId;
+    private float _currentStamp;
+    private double _offset;
+    private double _latency;
+    private Dictionary<ushort, float> _syncSessions = new Dictionary<ushort, float>();
+    private int _syncIter;
+    private double _rt_total;
+    private double _offset_total;
 
     void Awake()
     {
@@ -22,6 +30,16 @@ public class Client : MonoBehaviour {
         pr = new PacketReader();
     }
 
+    void RequestTimeSync()
+    {
+        // Request Time Sync
+        pb.PushPacketType(PacketType.PING);
+        _syncId = (ushort)Random.Range(0, 65535);
+        pb.PushUint16(_syncId);
+        webSocket.Send(pb.Build());
+        _syncSessions[_syncId] = Time.time;
+    }
+
     IEnumerator Start()
     {
         webSocket = new WebSocket(new Uri("ws://96.40.72.113:10000/player"));
@@ -29,12 +47,7 @@ public class Client : MonoBehaviour {
         yield return StartCoroutine(webSocket.Connect());
 
         Debug.Log("Connected");
-
-        // Request Time Sync
-        pb.PushByte(0);
-        var rand = (ushort)Random.Range(0, 65535);
-        pb.PushUint16(rand);
-        webSocket.Send(pb.Build());
+        StartCoroutine(SyncTime());
 
         while (true)
         {
@@ -47,12 +60,15 @@ public class Client : MonoBehaviour {
 
                 while (packetType != 0)
                 {
-                    var stamp = pr.ReadFloat32();
+                    _currentStamp = pr.ReadFloat32();
 
                     switch (packetType)
                     {
                         case PacketType.META:
                             HandleMeta(pr.ReadJsonObject().AsObject);
+                            break;
+                        case PacketType.PONG:
+                            HandlePong(pr);
                             break;
                         case PacketType.DO_ASSIGN_CONTROL:
                         { 
@@ -156,6 +172,49 @@ public class Client : MonoBehaviour {
             yield return 0;
         }
         webSocket.Close();
+    }
+
+    private IEnumerator SyncTime()
+    {
+        _syncIter = 0;
+        _rt_total = 0;
+        _offset_total = 0;
+
+        for (var i=0;i<10;++i)
+        {
+            RequestTimeSync();
+            yield return new WaitForSeconds(0.375f);
+        }
+
+        while (_syncIter < 10)
+        {
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        _latency = _rt_total/20f;
+        _offset = _offset_total/10f;
+
+        Debug.Log("Avg Offset: " + _offset);
+        Debug.Log("Avg Latency: " + _latency);
+    }
+
+    private void HandlePong(PacketReader packetReader)
+    {
+        var syncId = pr.ReadUint16();
+        var t0 = _syncSessions[syncId];
+        _syncSessions.Remove(syncId);
+        var t1 = pr.ReadFloat64();
+        var t2 = _currentStamp;
+        var t3 = Time.time;
+
+        var rt = (t3 - t0) - (t2 - t1);
+        var off = ((t1 - t0) + (t2 - t3))/2f;
+
+        _latency = rt/2f;
+        _offset = off;
+        _rt_total += rt;
+        _offset_total += off;
+        _syncIter += 1;
     }
 
     private void HandleMeta(JSONClass data)

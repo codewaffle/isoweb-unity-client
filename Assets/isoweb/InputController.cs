@@ -35,7 +35,6 @@ public class InputController : MonoBehaviour {
         {
             var clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Config.Client.SendCmdContextualPosition(clickPos.x, clickPos.y);
-            Debug.Log(clickPos);
             _nextMove = Time.time + 0.2f;
             
         }

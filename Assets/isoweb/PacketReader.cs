@@ -80,4 +80,16 @@ public class PacketReader
         var str = Encoding.UTF8.GetString(bytes);
         return str;
     }
+
+    public ushort ReadUint16()
+    {
+        idx += 2;
+        return BitConverter.ToUInt16(_data, end - idx);
+    }
+
+    public double ReadFloat64()
+    {
+        idx += 8;
+        return BitConverter.ToDouble(_data, end - idx);
+    }
 }
