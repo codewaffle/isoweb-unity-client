@@ -34,6 +34,6 @@ public class SpriteBehaviour : EntityBehaviour
         if (_renderer == null)
             _renderer = gameObject.AddComponent<SpriteRenderer>();
 
-        _renderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero, 128f);
+        _renderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one*0.5f, 128f);
     }
 }
