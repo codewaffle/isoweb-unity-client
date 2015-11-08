@@ -1,9 +1,11 @@
-﻿using SimpleJSON;
+﻿using System.Runtime.Remoting;
+using SimpleJSON;
 using UnityEngine;
 
 public class EntityComponent
 {
     public Entity AttachedEntity { get; private set; }
+    public bool IsActive { get; private set; }
 
     public EntityComponent(Entity ent)
     {
@@ -15,11 +17,23 @@ public class EntityComponent
         Debug.LogError("Unhandled Component Data: " + this + " : " + value.ToString());
     }
 
-    public virtual void Disable()
+    public void SetActive(bool active)
+    {
+        if (active == IsActive)
+            return;
+
+        IsActive = active;
+        if (active)
+            Activate();
+        else
+            Deactivate();
+    }
+
+    protected virtual void Activate()
     {
     }
 
-    public void Enable()
+    protected virtual void Deactivate()
     {
     }
 }

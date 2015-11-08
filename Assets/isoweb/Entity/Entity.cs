@@ -109,10 +109,20 @@ public class Entity
 
     public void Enable()
     {
+        if(_gameObject != null)
+            _gameObject.SetActive(true);
+
         foreach (var c in Components)
-        {
-            c.Enable();
-        }
+            c.SetActive(true);
+    }
+
+    public void Disable()
+    {
+        foreach (var c in Components)
+            c.SetActive(false);
+
+        if (_gameObject != null)
+            _gameObject.SetActive(false);
     }
 
     public EntityComponent GetComponent(string cName)
@@ -148,14 +158,6 @@ public class Entity
             {
                 yield return k.Value;
             }
-        }
-    }
-
-    public void Disable()
-    {
-        foreach (var c in Components)
-        {
-            c.Disable();
         }
     }
 }

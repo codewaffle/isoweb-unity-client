@@ -29,7 +29,20 @@ public class SpriteEntityComponent : EntityComponent
         {
             _behaviour = AttachedEntity.GameObject.AddComponent<SpriteBehaviour>();
             _behaviour.AttachedEntity = AttachedEntity;
+            _behaviour.enabled = IsActive;
         }
         _behaviour.SetUrl(url);
+    }
+
+    protected override void Activate()
+    {
+        if (_behaviour != null)
+            _behaviour.enabled = true;
+    }
+
+    protected override void Deactivate()
+    {
+        if (_behaviour != null)
+            _behaviour.enabled = false;
     }
 }
