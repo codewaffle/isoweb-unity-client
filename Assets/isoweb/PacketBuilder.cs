@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PacketBuilder
 {
@@ -23,7 +24,7 @@ public class PacketBuilder
 
     public void PushUint16(ushort item)
     {
-        var bytes = BitConverter.GetBytes(item);
+        var bytes = BitConverter.GetBytes(item).Reverse().ToArray();
         _packet.Add(bytes);
         _length += bytes.Length;
     }
@@ -48,5 +49,12 @@ public class PacketBuilder
         Clear();
 
         return res;
+    }
+
+    public void PushFloat32(float f)
+    {
+        var bytes = BitConverter.GetBytes(f).Reverse().ToArray();
+        _packet.Add(bytes);
+        _length += bytes.Length;
     }
 }
