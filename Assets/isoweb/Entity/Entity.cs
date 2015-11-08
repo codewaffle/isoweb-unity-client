@@ -9,9 +9,10 @@ public class Entity
     private Entity _parent;
     private EntityDef _def;
     private Vector2 _pos;
-    private Vector2 _vel;
     private float _rot;
     private GameObject _gameObject;
+    private CommonBehaviour _behaviour;
+    private bool _active = false;
 
     private Dictionary<string, EntityComponent> _componentMap = new Dictionary<string, EntityComponent>();
 
@@ -22,6 +23,11 @@ public class Entity
             if (_gameObject == null)
             {
                 _gameObject = new GameObject(_name);
+                _behaviour = _gameObject.AddComponent<CommonBehaviour>();
+                _behaviour.AttachedEntity = this;
+                //_behaviour.enabled = _active;
+                //_gameObject.SetActive(_active);
+
                 if (_parent != null)
                 {
                     _gameObject.transform.parent = _parent.GameObject.transform;
@@ -89,13 +95,12 @@ public class Entity
         def.Populate(this);
     }
 
-    public void UpdatePosition(float x, float y, float r, float velX, float velY)
+    public void SetPosition(float x, float y, float r)
     {
         _pos.Set(x, y);
         _rot = r;
-        _vel.Set(velX, velY);
-        
-        GameObject.transform.position = new Vector3(x,y,0);
+
+        GameObject.transform.position = new Vector3(x, y, 0);
         GameObject.transform.localEulerAngles = new Vector3(0, 0, _rot * Mathf.Rad2Deg);
     }
 
@@ -109,6 +114,8 @@ public class Entity
 
     public void Enable()
     {
+        _active = true;
+
         if(_gameObject != null)
             _gameObject.SetActive(true);
 
@@ -123,6 +130,8 @@ public class Entity
 
         if (_gameObject != null)
             _gameObject.SetActive(false);
+
+        _active = false;
     }
 
     public EntityComponent GetComponent(string cName)
@@ -159,5 +168,10 @@ public class Entity
                 yield return k.Value;
             }
         }
+    }
+
+    public void PushPositionUpdate(float stamp, float x, float y, float r)
+    {
+        _behaviour.PushPositionUpdate(stamp, x, y, r);
     }
 }

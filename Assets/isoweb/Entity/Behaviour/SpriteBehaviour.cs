@@ -14,7 +14,15 @@ public class SpriteBehaviour : EntityBehaviour
     public void SetUrl(string url)
     {
         _url = url;
-        StartCoroutine(UpdateRenderer());
+
+        if (isActiveAndEnabled)
+            StartCoroutine(UpdateRenderer());
+    }
+
+    void OnEnable()
+    {
+        if(_url != null)
+            StartCoroutine(UpdateRenderer());
     }
 
     IEnumerator UpdateRenderer()

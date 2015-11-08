@@ -153,10 +153,12 @@ public class Client : MonoBehaviour {
                         _currentStamp,
                         pr.ReadFloat32(),
                         pr.ReadFloat32(),
-                        pr.ReadFloat32(),
-                        pr.ReadFloat32(),
                         pr.ReadFloat32()
                         );
+
+                    pr.ReadFloat32();
+                    pr.ReadFloat32();
+
                     break;
                 }
                 case PacketType.ENTITY_UPDATE:
@@ -202,6 +204,16 @@ public class Client : MonoBehaviour {
 
         Debug.Log("Avg Offset: " + _offset);
         Debug.Log("Avg Latency: " + _latency);
+    }
+
+    public float ServerTime
+    {
+        get { return (float)(Time.time + _offset); }
+    }
+
+    public float AdjustedServerTime
+    {
+        get { return ServerTime - Config.Interpolate; }
     }
 
     private void HandlePong(PacketReader packetReader)
