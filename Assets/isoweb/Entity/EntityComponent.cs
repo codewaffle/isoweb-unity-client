@@ -14,4 +14,12 @@ public class EntityComponent
     {
         Debug.LogError("Unhandled Component Data: " + this + " : " + value.ToString());
     }
+
+    public virtual void Disable()
+    {
+    }
+
+    public void Enable()
+    {
+    }
 }

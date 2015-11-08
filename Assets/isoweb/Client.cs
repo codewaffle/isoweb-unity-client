@@ -64,6 +64,9 @@ public class Client : MonoBehaviour {
                             pr.ReadEntityId().Enable();
                             break;
                         }
+                        case PacketType.ENTITY_DISABLE:
+                            pr.ReadEntityId().Disable();
+                            break;
                         case PacketType.ENTITY_UPDATE:
                         { 
                             var ent = pr.ReadEntityId();

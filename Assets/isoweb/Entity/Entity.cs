@@ -109,6 +109,10 @@ public class Entity
 
     public void Enable()
     {
+        foreach (var c in Components)
+        {
+            c.Enable();
+        }
     }
 
     public EntityComponent GetComponent(string cName)
@@ -133,6 +137,25 @@ public class Entity
             default:
                 Debug.LogError("Unknown AddComponent: " + cName);
                 return new EntityComponent(this);
+        }
+    }
+
+    public IEnumerable<EntityComponent> Components
+    {
+        get
+        {
+            foreach (var k in _componentMap)
+            {
+                yield return k.Value;
+            }
+        }
+    }
+
+    public void Disable()
+    {
+        foreach (var c in Components)
+        {
+            c.Disable();
         }
     }
 }
