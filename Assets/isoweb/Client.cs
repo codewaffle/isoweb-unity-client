@@ -10,15 +10,23 @@ using Random = UnityEngine.Random;
 public class Client : MonoBehaviour {
     PacketBuilder pb;
     PacketReader pr;
+    WebSocket webSocket;
+
+    void Awake()
+    {
+        if(Config.Client != null)
+            Debug.LogError("UGH WHY");
+
+        Config.Client = this;
+        pb = new PacketBuilder();
+        pr = new PacketReader();
+    }
 
     IEnumerator Start()
     {
-        pb = new PacketBuilder();
-        pr = new PacketReader();
+        webSocket = new WebSocket(new Uri("ws://96.40.72.113:10000/player"));
 
-        var w = new WebSocket(new Uri("ws://96.40.72.113:10000/player"));
-
-        yield return StartCoroutine(w.Connect());
+        yield return StartCoroutine(webSocket.Connect());
 
         Debug.Log("Connected");
 
@@ -26,11 +34,11 @@ public class Client : MonoBehaviour {
         pb.PushByte(0);
         var rand = (ushort)Random.Range(0, 65535);
         pb.PushUint16(rand);
-        w.Send(pb.Build());
+        webSocket.Send(pb.Build());
 
         while (true)
         {
-            var msg = w.Recv();
+            var msg = webSocket.Recv();
 
             if (msg != null)
             {
@@ -140,14 +148,14 @@ public class Client : MonoBehaviour {
                 }
             }
 
-            if (w.error != null)
+            if (webSocket.error != null)
             {
-                Debug.LogError("Error: " + w.error);
+                Debug.LogError("Error: " + webSocket.error);
                 break;
             }
             yield return 0;
         }
-        w.Close();
+        webSocket.Close();
     }
 
     private void HandleMeta(JSONClass data)
@@ -161,5 +169,13 @@ public class Client : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    public void SendCmdContextualPosition(float x, float y)
+    {
+        pb.PushByte((byte)PacketType.CMD_CONTEXTUAL_POSITION);
+        pb.PushFloat32(x);
+        pb.PushFloat32(y);
+        webSocket.Send(pb.Build());
     }
 }
