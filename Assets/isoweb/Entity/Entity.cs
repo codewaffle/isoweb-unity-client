@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 
 public class Entity
@@ -11,6 +12,8 @@ public class Entity
     private Vector2 _vel;
     private float _rot;
     private GameObject _gameObject;
+
+    private Dictionary<string, EntityComponent> _componentMap = new Dictionary<string, EntityComponent>();
 
     public GameObject GameObject
     {
@@ -79,7 +82,11 @@ public class Entity
 
     public void SetDefinition(EntityDef def)
     {
+        if(_def != null)
+            Debug.LogError("Definition already set.. whatever");
+
         _def = def;
+        def.Populate(this);
     }
 
     public void UpdatePosition(float x, float y, float r, float velX, float velY)
@@ -94,16 +101,38 @@ public class Entity
 
     public void UpdateAttributes(JSONNode attrs)
     {
-        Debug.Log(attrs);
+        foreach (KeyValuePair<string, JSONNode> kvp in attrs.AsObject)
+        {
+            GetComponent(kvp.Key).Update(kvp.Value);
+        }
     }
 
     public void Enable()
     {
-        _def.Populate(this);
     }
 
-    public T AddComponent<T>(T comp) where T : EntityComponent
+    public EntityComponent GetComponent(string cName)
     {
+        EntityComponent comp;
+
+        if (!_componentMap.TryGetValue(cName, out comp))
+        {
+            Debug.Log("Add Component " + cName + " to " + _name);
+            comp = _componentMap[cName] = AddComponent(cName);
+        }
+
         return comp;
+    }
+
+    public EntityComponent AddComponent(string cName)
+    {
+        switch (cName)
+        {
+            case "Sprite":
+                return new SpriteEntityComponent(this);
+            default:
+                Debug.LogError("Unknown AddComponent: " + cName);
+                return new EntityComponent(this);
+        }
     }
 }

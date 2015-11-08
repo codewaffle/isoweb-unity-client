@@ -23,24 +23,7 @@ public class EntityDef
     {
         foreach (KeyValuePair<string, JSONNode> kvp in _data.AsObject)
         {
-            EntityComponent c = null;
-
-            switch (kvp.Key)
-            {
-                case "Sprite":
-                {
-                    c = new SpriteEntityComponent(entity);
-                    break;
-                }
-                default:
-                    Debug.LogError("Unknown Component Type: " + kvp.Key);
-                    break;
-            }
-
-            if (c != null)
-            {
-                c.Update(kvp.Value);
-            }
+            entity.GetComponent(kvp.Key).Update(kvp.Value);
         }
     }
 }
