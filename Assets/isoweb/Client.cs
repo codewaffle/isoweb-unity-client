@@ -56,112 +56,7 @@ public class Client : MonoBehaviour {
             if (msg != null)
             {
                 pr.SetData(msg);
-                var packetType = pr.ReadPacketType();
-
-                while (packetType != 0)
-                {
-                    _currentStamp = pr.ReadFloat32();
-
-                    switch (packetType)
-                    {
-                        case PacketType.META:
-                            HandleMeta(pr.ReadJsonObject().AsObject);
-                            break;
-                        case PacketType.PONG:
-                            HandlePong(pr);
-                            break;
-                        case PacketType.DO_ASSIGN_CONTROL:
-                        { 
-                            var ent = pr.ReadEntityId();
-                            ent.TakeControl();
-                            break;
-                        }
-                        case PacketType.ENTITYDEF_UPDATE:
-                        { 
-                            var def = pr.ReadEntityDefId();
-                            var parsed = pr.ReadJsonObject();
-                            def.Update(parsed);
-                            break;
-                        }
-                        case PacketType.ENTITY_ENABLE:
-                        {
-                            pr.ReadEntityId().Enable();
-                            break;
-                        }
-                        case PacketType.ENTITY_DISABLE:
-                            pr.ReadEntityId().Disable();
-                            break;
-                        case PacketType.ENTITY_UPDATE:
-                        { 
-                            var ent = pr.ReadEntityId();
-                            var updateType = pr.ReadPacketType();
-
-                            while (updateType != PacketType.NULL)
-                            {
-
-                                switch (updateType)
-                                {
-                                    case PacketType.STRING_UPDATE:
-                                    {
-                                        var attr = pr.ReadSmallString();
-                                        var val = pr.ReadString();
-
-                                        ent.SetAttribute(attr, val);
-                                        break;
-                                    }
-                                    case PacketType.FLOAT_UPDATE:
-                                    {
-                                        var attr = pr.ReadSmallString();
-                                        var val = pr.ReadFloat32();
-
-                                        ent.SetAttribute(attr, val);
-                                        break;
-                                    }
-                                    case PacketType.PARENT_UPDATE:
-                                    {
-                                        var parent = pr.ReadEntityId();
-                                        ent.SetParent(parent);
-                                        break;
-                                    }
-                                    case PacketType.ENTITYDEF_HASH_UPDATE:
-                                    {
-                                        var def = pr.ReadEntityDefId();
-                                        ent.SetDefinition(def);
-                                        break;
-                                    }
-                                    case PacketType.POSITION_UPDATE:
-                                    {
-                                        ent.UpdatePosition(
-                                            pr.ReadFloat32(),
-                                            pr.ReadFloat32(),
-                                            pr.ReadFloat32(),
-                                            pr.ReadFloat32(),
-                                            pr.ReadFloat32()
-                                        );
-                                        break;
-                                    }
-                                    case PacketType.ENTITY_UPDATE:
-                                    {
-                                        ent.UpdateAttributes(pr.ReadJsonObject());
-                                        break;
-                                    }
-                                    default:
-                                        Debug.LogError("Unknown UPDATE type: " + updateType);
-                                        Debug.Break();
-                                        break;
-                                }
-                                updateType = pr.ReadPacketType();
-                            }
-                            break;
-                        }
-                        default:
-                            Debug.LogError("UNKNOWN PACKET: " + packetType);
-                            Debug.Break();
-                            break;
-                    }
-
-                    packetType = pr.ReadPacketType();
-                }
+                HandleMessage();
             }
 
             if (webSocket.error != null)
@@ -172,6 +67,117 @@ public class Client : MonoBehaviour {
             yield return 0;
         }
         webSocket.Close();
+    }
+
+    private void HandleMessage()
+    {
+        var packetType = pr.ReadPacketType();
+
+        while (packetType != 0)
+        {
+            _currentStamp = pr.ReadFloat32();
+
+            switch (packetType)
+            {
+                case PacketType.META:
+                    HandleMeta(pr.ReadJsonObject().AsObject);
+                    break;
+                case PacketType.PONG:
+                    HandlePong(pr);
+                    break;
+                case PacketType.DO_ASSIGN_CONTROL:
+                    pr.ReadEntityId().TakeControl();
+                    break;
+                case PacketType.ENTITYDEF_UPDATE:
+                    HandleEntityDefUpdate();
+                    break;
+                case PacketType.ENTITY_ENABLE:
+                    pr.ReadEntityId().Enable();
+                    break;
+                case PacketType.ENTITY_DISABLE:
+                    pr.ReadEntityId().Disable();
+                    break;
+                case PacketType.ENTITY_UPDATE:
+                    HandleEntityUpdate();
+                    break;
+                default:
+                    Debug.LogError("UNKNOWN PACKET: " + packetType);
+                    Debug.Break();
+                    break;
+            }
+
+            packetType = pr.ReadPacketType();
+        }
+    }
+
+    private void HandleEntityUpdate()
+    {
+        var ent = pr.ReadEntityId();
+        var updateType = pr.ReadPacketType();
+
+        while (updateType != PacketType.NULL)
+        {
+            switch (updateType)
+            {
+                case PacketType.STRING_UPDATE:
+                {
+                    var attr = pr.ReadSmallString();
+                    var val = pr.ReadString();
+
+                    ent.SetAttribute(attr, val);
+                    break;
+                }
+                case PacketType.FLOAT_UPDATE:
+                {
+                    var attr = pr.ReadSmallString();
+                    var val = pr.ReadFloat32();
+
+                    ent.SetAttribute(attr, val);
+                    break;
+                }
+                case PacketType.PARENT_UPDATE:
+                {
+                    var parent = pr.ReadEntityId();
+                    ent.SetParent(parent);
+                    break;
+                }
+                case PacketType.ENTITYDEF_HASH_UPDATE:
+                {
+                    var def = pr.ReadEntityDefId();
+                    ent.SetDefinition(def);
+                    break;
+                }
+                case PacketType.POSITION_UPDATE:
+                {
+                    ent.PushPositionUpdate(
+                        _currentStamp,
+                        pr.ReadFloat32(),
+                        pr.ReadFloat32(),
+                        pr.ReadFloat32(),
+                        pr.ReadFloat32(),
+                        pr.ReadFloat32()
+                        );
+                    break;
+                }
+                case PacketType.ENTITY_UPDATE:
+                {
+                    ent.UpdateAttributes(pr.ReadJsonObject());
+                    break;
+                }
+                default:
+                    Debug.LogError("Unknown UPDATE type: " + updateType);
+                    Debug.Break();
+                    break;
+            }
+            updateType = pr.ReadPacketType();
+        }
+    }
+
+    private void HandleEntityDefUpdate()
+    {
+        var def = pr.ReadEntityDefId();
+        var parsed = pr.ReadJsonObject();
+        def.Update(parsed);
     }
 
     private IEnumerator SyncTime()
