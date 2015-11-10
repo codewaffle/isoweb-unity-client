@@ -33,7 +33,7 @@ public class CommonBehaviour : EntityBehaviour {
             _prevUpdate = _nextUpdate;
             _nextUpdate = _updateQueue.Dequeue();
 
-            while (Config.Client.AdjustedServerTime < _nextUpdate.w)
+            while (Config.Client.ServerTime < _nextUpdate.w)
             {
                 var diff = _nextUpdate.w - _prevUpdate.w;
 
@@ -44,8 +44,11 @@ public class CommonBehaviour : EntityBehaviour {
                     _prevUpdate.w = _nextUpdate.w - diff;
                 }
 
-                var ratio = (Config.Client.AdjustedServerTime - _prevUpdate.w)/diff;
+                var ratio = (Config.Client.ServerTime - _prevUpdate.w)/diff;
                 var lerp = Vector4.Lerp(_prevUpdate, _nextUpdate, ratio);
+
+                // re-lerp rotation to avoid huge spins
+                lerp.z = Mathx.LerpBearing(_prevUpdate.z, _nextUpdate.z, ratio);
                 AttachedEntity.SetPosition(lerp.x, lerp.y, lerp.z);
 
                 // TODO : monitor queue size - we want it to be small (1-2) but probably depends on client latency.
