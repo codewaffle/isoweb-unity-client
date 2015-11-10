@@ -37,7 +37,7 @@ public class Client : MonoBehaviour {
         _syncId = (ushort)Random.Range(0, 65535);
         pb.PushUint16(_syncId);
         webSocket.Send(pb.Build());
-        _syncSessions[_syncId] = Time.time;
+        _syncSessions[_syncId] = Time.realtimeSinceStartup;
     }
 
     IEnumerator Start()
@@ -184,31 +184,37 @@ public class Client : MonoBehaviour {
 
     private IEnumerator SyncTime()
     {
-        _syncIter = 0;
-        _rt_total = 0;
-        _offset_total = 0;
+        while(true) { 
+            _syncIter = 0;
+            _rt_total = 0;
+            _offset_total = 0;
 
-        for (var i=0;i<10;++i)
-        {
-            RequestTimeSync();
-            yield return new WaitForSeconds(0.375f);
+            yield return new WaitForSeconds(0.1f);
+
+            for (var i=0;i<10;++i)
+            {
+                RequestTimeSync();
+                yield return new WaitForSeconds(0.175f);
+            }
+
+            while (_syncIter < 10)
+            {
+                yield return new WaitForSeconds(0.05f);
+            }
+
+            _latency = _rt_total/10f;
+            _offset = _offset_total/10f;
+
+            Debug.Log("Avg Offset: " + _offset);
+            Debug.Log("Avg Latency: " + _latency * 1000.0f);
+
+            yield return new WaitForSeconds(300.0f);
         }
-
-        while (_syncIter < 10)
-        {
-            yield return new WaitForSeconds(0.05f);
-        }
-
-        _latency = _rt_total/20f;
-        _offset = _offset_total/10f;
-
-        Debug.Log("Avg Offset: " + _offset);
-        Debug.Log("Avg Latency: " + _latency);
     }
 
     public float ServerTime
     {
-        get { return (float)(Time.time + _offset); }
+        get { return (float)(Time.realtimeSinceStartup + _offset - (_latency/2f)); }
     }
 
     public float AdjustedServerTime
@@ -223,9 +229,9 @@ public class Client : MonoBehaviour {
         _syncSessions.Remove(syncId);
         var t1 = pr.ReadFloat64();
         var t2 = _currentStamp;
-        var t3 = Time.time;
+        var t3 = Time.realtimeSinceStartup;
 
-        var rt = (t3 - t0) - (t2 - t1);
+        var rt = (t3 - t0);//  - (t2 - t1);
         var off = ((t1 - t0) + (t2 - t3))/2f;
 
         _latency = rt/2f;

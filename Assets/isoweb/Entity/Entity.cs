@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SimpleJSON;
 using UnityEngine;
 
@@ -161,12 +162,8 @@ public class Entity
 
     public IEnumerable<EntityComponent> Components
     {
-        get
-        {
-            foreach (var k in _componentMap)
-            {
-                yield return k.Value;
-            }
+        get {
+            return _componentMap.Select(k => k.Value);
         }
     }
 
