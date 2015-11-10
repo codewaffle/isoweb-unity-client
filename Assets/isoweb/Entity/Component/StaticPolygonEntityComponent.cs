@@ -34,15 +34,15 @@ internal class StaticPolygonEntityComponent : EntityComponent
         }
     }
 
-    private void HandlePoints(JSONNode pointsArr)
+    private void HandlePoints(JSONNode pointsNode)
     {
-        Vector2[] points = new Vector2[pointsArr.Count];
-        var i = 0;
+        var pointsArr = pointsNode.AsArray;
+        Vector2[] points = new Vector2[pointsArr.Count - 1];
 
-        foreach (JSONNode pointArr in pointsArr.AsArray)
+        for (var i = 0; i < pointsArr.Count - 1; ++i)
         {
-            var point = pointArr.AsArray;
-            points[i++].Set(point[0].AsFloat, point[1].AsFloat);
+            var point = pointsArr[i];
+            points[i].Set(point[0].AsFloat, point[1].AsFloat);
         }
 
         Behaviour.SetPoints(points);
