@@ -154,7 +154,7 @@ public class Client : MonoBehaviour {
                         pr.ReadFloat32(),
                         pr.ReadFloat32(),
                         pr.ReadFloat32()
-                        );
+                    );
 
                     pr.ReadFloat32();
                     pr.ReadFloat32();
@@ -202,24 +202,19 @@ public class Client : MonoBehaviour {
                 yield return new WaitForSeconds(0.05f);
             }
 
-            _latency = _rt_total/10f;
+            _latency = (_rt_total/10f)/2f;
             _offset = _offset_total/10f;
 
             Debug.Log("Avg Offset: " + _offset);
-            Debug.Log("Avg Latency: " + _latency * 1000.0f);
+            Debug.Log("Avg Latency: " + (int)(_latency * 1000.0f) + "ms");
 
-            yield return new WaitForSeconds(300.0f);
+            yield return new WaitForSeconds(120.0f);
         }
     }
 
     public float ServerTime
     {
-        get { return (float)(Time.realtimeSinceStartup + _offset - (_latency/2f)); }
-    }
-
-    public float AdjustedServerTime
-    {
-        get { return ServerTime - Config.Interpolate; }
+        get { return (float)(Time.realtimeSinceStartup + _offset - Math.Max(Config.MinInterpolate, _latency)); }
     }
 
     private void HandlePong(PacketReader packetReader)
@@ -234,8 +229,11 @@ public class Client : MonoBehaviour {
         var rt = (t3 - t0);//  - (t2 - t1);
         var off = ((t1 - t0) + (t2 - t3))/2f;
 
-        _latency = rt/2f;
-        _offset = off;
+        if (_latency == 0f) // use first result to get it goin'
+        {
+            _latency = rt / 2f;
+            _offset = off;
+        }
         _rt_total += rt;
         _offset_total += off;
         _syncIter += 1;
