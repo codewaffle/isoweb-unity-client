@@ -141,7 +141,7 @@ public class Entity
 
         if (!_componentMap.TryGetValue(cName, out comp))
         {
-            Debug.Log("Add Component " + cName + " to " + _name);
+            // Debug.Log("Add Component " + cName + " to " + _name);
             comp = _componentMap[cName] = AddComponent(cName);
         }
 
@@ -154,8 +154,10 @@ public class Entity
         {
             case "Sprite":
                 return new SpriteEntityComponent(this);
+            case "StaticPolygon":
+                return new StaticPolygonEntityComponent(this);
             default:
-                Debug.LogError("Unknown AddComponent: " + cName);
+                Debug.LogWarning("Unknown AddComponent: " + cName);
                 return new EntityComponent(this);
         }
     }

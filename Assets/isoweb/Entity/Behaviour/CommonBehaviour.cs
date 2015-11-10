@@ -53,7 +53,7 @@ public class CommonBehaviour : EntityBehaviour {
 
                 // TODO : monitor queue size - we want it to be small (1-2) but probably depends on client latency.
 
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
             AttachedEntity.SetPosition(_nextUpdate.x, _nextUpdate.y, _nextUpdate.z);
         }

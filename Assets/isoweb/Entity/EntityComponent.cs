@@ -14,7 +14,7 @@ public class EntityComponent
 
     public virtual void Update(JSONNode value)
     {
-        Debug.LogError("Unhandled Component Data: " + this + " : " + value.ToString());
+        Debug.LogWarning("Unhandled Component Data: " + this + " : " + value.ToString());
     }
 
     public void SetActive(bool active)
