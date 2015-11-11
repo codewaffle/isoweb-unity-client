@@ -17,6 +17,7 @@ public class StaticPolygonBehaviour : MonoBehaviour
 	
     public void SetTextureUrl(string url)
     {
+        AssetManager.Fetch(url, www => _renderer.material.mainTexture = www.texture);
     }
 
     public void SetPoints(Vector2[] points)
@@ -25,11 +26,16 @@ public class StaticPolygonBehaviour : MonoBehaviour
         var indices = tri.Triangulate();
 
         if (_mesh == null)
+        {
             _mesh = new Mesh();
+            _renderer.material = Config.DefaultMaterial;
+        }
 
         _mesh.Clear();
         _mesh.vertices = points.Select(s => (Vector3) s).ToArray();
-        _mesh.uv = points;
+        _mesh.uv = points.Select(s => new Vector2(s.x / 4f, s.y / 4f)).ToArray();
+        // so lazy
+        _mesh.normals = points.Select(s => new Vector3(0, 0, -1f)).ToArray();
         _mesh.triangles = indices;
         _meshFilter.mesh = _mesh;
     }

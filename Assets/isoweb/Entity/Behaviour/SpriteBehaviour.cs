@@ -24,7 +24,10 @@ public class SpriteBehaviour : EntityBehaviour
     private void SetTexture(Texture2D texture)
     {
         if (_renderer == null)
+        {
             _renderer = gameObject.AddComponent<SpriteRenderer>();
+            _renderer.material = Config.DefaultMaterial;
+        }
 
         _renderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one*0.5f, 128f);
     }
