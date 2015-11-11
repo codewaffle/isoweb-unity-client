@@ -23,8 +23,9 @@ public class AssetManager : MonoBehaviour
     {
         WWW www;
 
-        if (!_cache.TryGetValue(url, out www))
-            www = _cache[url] = new WWW(url);
+        if (!_cache.TryGetValue(url, out www)) { 
+            www = _cache[url] = new WWW(Config.AssetBase + url);
+        }
 
         if (!www.isDone)
         {

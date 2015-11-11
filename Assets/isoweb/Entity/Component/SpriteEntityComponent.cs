@@ -17,7 +17,7 @@ public class SpriteEntityComponent : EntityComponent
             switch (kvp.Key)
             {
                 case "sprite":
-                    UpdateSpriteUrl(Config.AssetBase + kvp.Value);
+                    UpdateSpriteUrl(kvp.Value);
                     break;
             }
         }
