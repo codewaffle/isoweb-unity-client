@@ -7,34 +7,18 @@ public class SpriteBehaviour : EntityBehaviour
     private SpriteRenderer _renderer;
     private Sprite _sprite;
     private string _url;
-
-    private static Dictionary<string, WWW> _cache
-        = new Dictionary<string, WWW>(); 
-
+    
     public void SetUrl(string url)
     {
         _url = url;
 
-        if (isActiveAndEnabled)
-            StartCoroutine(UpdateRenderer());
+        AssetManager.Fetch(url, www => SetTexture(www.texture));
     }
 
     void OnEnable()
     {
         if(_url != null)
-            StartCoroutine(UpdateRenderer());
-    }
-
-    IEnumerator UpdateRenderer()
-    {
-        WWW www;
-        if (!_cache.TryGetValue(_url, out www))
-            www = _cache[_url] = new WWW(_url);
-
-        if (!www.isDone)
-            yield return www;
-
-        SetTexture(www.texture);
+            AssetManager.Fetch(_url, www => SetTexture(www.texture));
     }
 
     private void SetTexture(Texture2D texture)
