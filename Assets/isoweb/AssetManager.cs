@@ -2,55 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void AssetCallback(WWW www);
-
-public class AssetManager : MonoBehaviour
+namespace isoweb
 {
-    private Dictionary<string, WWW>  _cache = new Dictionary<string, WWW>();
+    public delegate void AssetCallback(WWW www);
 
-    private static AssetManager _instance;
-    private static AssetManager GetInstance()
+    public class AssetManager : MonoBehaviour
     {
-        if (_instance == null)
+        private Dictionary<string, WWW>  _cache = new Dictionary<string, WWW>();
+
+        private static AssetManager _instance;
+        private static AssetManager GetInstance()
         {
-            var go = new GameObject("AssetManager");
-            _instance = go.AddComponent<AssetManager>();
-        }
-        return _instance;
-    }
-
-    protected void InternalFetch(string url, AssetCallback callback)
-    {
-        WWW www;
-
-        if (!_cache.TryGetValue(url, out www)) { 
-            www = _cache[url] = new WWW(Config.AssetBase + url);
+            if (_instance == null)
+            {
+                var go = new GameObject("AssetManager");
+                _instance = go.AddComponent<AssetManager>();
+            }
+            return _instance;
         }
 
-        if (!www.isDone)
+        protected void InternalFetch(string url, AssetCallback callback)
         {
-            StartCoroutine(WaitForFinish(www, callback));
+            WWW www;
+
+            if (!_cache.TryGetValue(url, out www)) { 
+                www = _cache[url] = new WWW(Config.AssetBase + url);
+            }
+
+            if (!www.isDone)
+            {
+                StartCoroutine(WaitForFinish(www, callback));
+            }
+            else
+            {
+                callback(www);
+            }
+
         }
-        else
+
+        public static void Fetch(string url, AssetCallback callback)
         {
+            GetInstance().InternalFetch(url, callback);
+        }
+
+        private IEnumerator WaitForFinish(WWW www, AssetCallback callback)
+        {
+            while (!www.isDone)
+            {
+                yield return null;
+            }
+
             callback(www);
         }
-
-    }
-
-    public static void Fetch(string url, AssetCallback callback)
-    {
-        GetInstance().InternalFetch(url, callback);
-    }
-
-    private IEnumerator WaitForFinish(WWW www, AssetCallback callback)
-    {
-        while (!www.isDone)
-        {
-            yield return null;
-        }
-
-        callback(www);
     }
 }
-

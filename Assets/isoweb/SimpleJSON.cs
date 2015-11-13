@@ -48,8 +48,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-
-namespace SimpleJSON
+namespace isoweb
 {
     public enum JSONBinaryTag
     {

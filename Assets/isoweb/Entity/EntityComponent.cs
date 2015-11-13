@@ -1,42 +1,43 @@
-﻿using System.Runtime.Remoting;
-using SimpleJSON;
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// EntityComponents reflect server-side components.
-/// </summary>
-public class EntityComponent
+namespace isoweb.Entity
 {
-    public Entity AttachedEntity { get; private set; }
-    public bool IsActive { get; private set; }
-
-    public EntityComponent(Entity ent)
+    /// <summary>
+    /// EntityComponents reflect server-side components.
+    /// </summary>
+    public class EntityComponent
     {
-        AttachedEntity = ent;
-    }
+        public Entity AttachedEntity { get; private set; }
+        public bool IsActive { get; private set; }
 
-    public virtual void Update(JSONNode value)
-    {
-        Debug.LogWarning("Unhandled Component Data: " + this + " : " + value.ToString());
-    }
+        public EntityComponent(Entity ent)
+        {
+            AttachedEntity = ent;
+        }
 
-    public void SetActive(bool active)
-    {
-        if (active == IsActive)
-            return;
+        public virtual void Update(JSONNode value)
+        {
+            Debug.LogWarning("Unhandled Component Data: " + this + " : " + value.ToString());
+        }
 
-        IsActive = active;
-        if (active)
-            Activate();
-        else
-            Deactivate();
-    }
+        public void SetActive(bool active)
+        {
+            if (active == IsActive)
+                return;
 
-    protected virtual void Activate()
-    {
-    }
+            IsActive = active;
+            if (active)
+                Activate();
+            else
+                Deactivate();
+        }
 
-    protected virtual void Deactivate()
-    {
+        protected virtual void Activate()
+        {
+        }
+
+        protected virtual void Deactivate()
+        {
+        }
     }
 }

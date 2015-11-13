@@ -1,13 +1,17 @@
-﻿using UnityEngine;
+﻿using isoweb.Entity;
+using UnityEngine;
 
-public class Setup : MonoBehaviour
+namespace isoweb
 {
-    public Material DefaultMaterial;
-    void Start ()
+    public class Setup : MonoBehaviour
     {
-        Config.DefaultMaterial = DefaultMaterial;
-        EntityManager.Init();
-	    gameObject.AddComponent<Client>();
-	    var mod = Camera.main.gameObject.AddComponent<TrackingCamera>();
-	}
+        public Material DefaultMaterial;
+        void Start ()
+        {
+            Config.DefaultMaterial = DefaultMaterial;
+            EntityManager.Init();
+            gameObject.AddComponent<Client>();
+            var mod = Camera.main.gameObject.AddComponent<TrackingCamera>();
+        }
+    }
 }

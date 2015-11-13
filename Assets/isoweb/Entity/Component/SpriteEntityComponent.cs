@@ -1,47 +1,47 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using SimpleJSON;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-public class SpriteEntityComponent : EntityComponent
+namespace isoweb.Entity
 {
-    SpriteBehaviour _behaviour;
-    public SpriteEntityComponent(Entity ent) : base(ent)
+    public class SpriteEntityComponent : EntityComponent
     {
-    }
-
-    public override void Update(JSONNode value)
-    {
-        foreach (KeyValuePair<string, JSONNode> kvp in value.AsObject)
+        SpriteBehaviour _behaviour;
+        public SpriteEntityComponent(Entity ent) : base(ent)
         {
-            switch (kvp.Key)
+        }
+
+        public override void Update(JSONNode value)
+        {
+            foreach (KeyValuePair<string, JSONNode> kvp in value.AsObject)
             {
-                case "sprite":
-                    UpdateSpriteUrl(kvp.Value);
-                    break;
+                switch (kvp.Key)
+                {
+                    case "sprite":
+                        UpdateSpriteUrl(kvp.Value);
+                        break;
+                }
             }
         }
-    }
 
-    private void UpdateSpriteUrl(string url)
-    {
-        if (_behaviour == null)
+        private void UpdateSpriteUrl(string url)
         {
-            _behaviour = AttachedEntity.GameObject.AddComponent<SpriteBehaviour>();
-            _behaviour.enabled = IsActive;
+            if (_behaviour == null)
+            {
+                _behaviour = AttachedEntity.GameObject.AddComponent<SpriteBehaviour>();
+                _behaviour.enabled = IsActive;
+            }
+            _behaviour.SetUrl(url);
         }
-        _behaviour.SetUrl(url);
-    }
 
-    protected override void Activate()
-    {
-        if (_behaviour != null)
-            _behaviour.enabled = true;
-    }
+        protected override void Activate()
+        {
+            if (_behaviour != null)
+                _behaviour.enabled = true;
+        }
 
-    protected override void Deactivate()
-    {
-        if (_behaviour != null)
-            _behaviour.enabled = false;
+        protected override void Deactivate()
+        {
+            if (_behaviour != null)
+                _behaviour.enabled = false;
+        }
     }
 }

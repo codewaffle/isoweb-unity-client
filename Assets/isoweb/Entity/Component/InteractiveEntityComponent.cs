@@ -1,104 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
-using SimpleJSON;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-internal class InteractiveEntityComponent : EntityComponent
-{
-    private bool _include_position;
-
-    private GameObject _interactiveGo;
-    Collider2D _collider;
-    private string _shape;
-    private JSONArray _args;
-
-    GameObject InteractiveGameObject
+namespace isoweb.Entity { 
+    public class InteractiveEntityComponent : EntityComponent
     {
-        get { return _interactiveGo ?? (_interactiveGo = InitGameObject()); }
-    }
+        private bool _include_position;
 
-    private GameObject InitGameObject()
-    {
-        var go = new GameObject("__INTERACTIVE");
-        go.transform.parent = AttachedEntity.GameObject.transform;
-        return go;
-    }
+        private GameObject _interactiveGo;
+        Collider2D _collider;
+        private string _shape;
+        private JSONArray _args;
 
-    public InteractiveEntityComponent(Entity ent) : base(ent)
-    {
-    }
-
-    public override void Update(JSONNode value)
-    {
-        foreach (KeyValuePair<string, JSONNode> kvp in value.AsObject)
+        GameObject InteractiveGameObject
         {
-            switch (kvp.Key)
+            get { return _interactiveGo ?? (_interactiveGo = InitGameObject()); }
+        }
+
+        private GameObject InitGameObject()
+        {
+            var go = new GameObject("__INTERACTIVE");
+            go.transform.parent = AttachedEntity.GameObject.transform;
+            return go;
+        }
+
+        public InteractiveEntityComponent(Entity ent) : base(ent)
+        {
+        }
+
+        public override void Update(JSONNode value)
+        {
+            foreach (KeyValuePair<string, JSONNode> kvp in value.AsObject)
             {
-                case "include_position":
-                    _include_position = kvp.Value.AsBool;
-                    break;
-                case "shape":
-                    SetShape(kvp.Value);
-                    break;
-                case "shape_args":
-                    SetArgs(kvp.Value.AsArray);
+                switch (kvp.Key)
+                {
+                    case "include_position":
+                        _include_position = kvp.Value.AsBool;
+                        break;
+                    case "shape":
+                        SetShape(kvp.Value);
+                        break;
+                    case "shape_args":
+                        SetArgs(kvp.Value.AsArray);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void SetArgs(JSONArray args)
+        {
+            _args = args;
+
+            if (_shape == null)
+                return;
+
+            switch (_shape)
+            {
+                case "circle":
+                    SetCircleArgs();
                     break;
                 default:
+                    Debug.LogWarning("Unhandled Args for Shape");
                     break;
             }
         }
-    }
 
-    private void SetArgs(JSONArray args)
-    {
-        _args = args;
-
-        if (_shape == null)
-            return;
-
-        switch (_shape)
+        private void SetCircleArgs()
         {
-            case "circle":
-                SetCircleArgs();
-                break;
-            default:
-                Debug.LogWarning("Unhandled Args for Shape");
-                break;
-        }
-    }
-
-    private void SetCircleArgs()
-    {
-        var cc = (CircleCollider2D) _collider;
-        cc.offset = new Vector2(_args[0].AsFloat, _args[1].AsFloat);
-        cc.radius = _args[2].AsFloat;
-    }
-
-    private void SetShape(string shape)
-    {
-        _shape = shape;
-        switch (shape)
-        {
-            case "circle":
-                _collider = InteractiveGameObject.AddComponent<CircleCollider2D>();
-                SetupCollider();
-                break;
-            default:
-                Debug.Log("unknown shape : " + shape);
-                break;
+            var cc = (CircleCollider2D) _collider;
+            cc.offset = new Vector2(_args[0].AsFloat, _args[1].AsFloat);
+            cc.radius = _args[2].AsFloat;
         }
 
-        if (_args != null)
-            SetArgs(_args);
-    }
+        private void SetShape(string shape)
+        {
+            _shape = shape;
+            switch (shape)
+            {
+                case "circle":
+                    _collider = InteractiveGameObject.AddComponent<CircleCollider2D>();
+                    SetupCollider();
+                    break;
+                default:
+                    Debug.Log("unknown shape : " + shape);
+                    break;
+            }
 
-    private void SetupCollider()
-    {
-        InteractiveGameObject.layer = 8;
-    }
+            if (_args != null)
+                SetArgs(_args);
+        }
 
-    void OnMouseOver()
-    {
-        Debug.Log("HOLEE CRAP");
+        private void SetupCollider()
+        {
+            InteractiveGameObject.layer = 8;
+        }
+
+        void OnMouseOver()
+        {
+            Debug.Log("HOLEE CRAP");
+        }
     }
 }

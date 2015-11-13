@@ -1,37 +1,40 @@
 ﻿using System.Collections.Generic;
 
-public class EntityManager
+namespace isoweb.Entity
 {
-    static Dictionary<uint, Entity> _entities;
-    static Dictionary<ulong, EntityDef> _entityDefs;
-
-    public static void Init()
+    public class EntityManager
     {
-        _entities = new Dictionary<uint, Entity>();
-        _entityDefs = new Dictionary<ulong, EntityDef>();
-    }
+        static Dictionary<uint, Entity> _entities;
+        static Dictionary<ulong, EntityDef> _entityDefs;
 
-    public static Entity Get(uint entityId)
-    {
-        Entity val;
-
-        if (!_entities.TryGetValue(entityId, out val))
+        public static void Init()
         {
-            val = _entities[entityId] = new Entity(entityId);
+            _entities = new Dictionary<uint, Entity>();
+            _entityDefs = new Dictionary<ulong, EntityDef>();
         }
 
-        return val;
-    }
-
-    public static EntityDef GetDef(ulong hash)
-    {
-        EntityDef val;
-
-        if (!_entityDefs.TryGetValue(hash, out val))
+        public static Entity Get(uint entityId)
         {
-            val = _entityDefs[hash] = new EntityDef(hash);
+            Entity val;
+
+            if (!_entities.TryGetValue(entityId, out val))
+            {
+                val = _entities[entityId] = new Entity(entityId);
+            }
+
+            return val;
         }
 
-        return val;
+        public static EntityDef GetDef(ulong hash)
+        {
+            EntityDef val;
+
+            if (!_entityDefs.TryGetValue(hash, out val))
+            {
+                val = _entityDefs[hash] = new EntityDef(hash);
+            }
+
+            return val;
+        }
     }
 }
