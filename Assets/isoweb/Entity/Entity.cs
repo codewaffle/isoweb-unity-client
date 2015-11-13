@@ -12,7 +12,7 @@ public class Entity
     private Vector2 _pos;
     private float _rot;
     private GameObject _gameObject;
-    private CommonBehaviour _behaviour;
+    private EntityBehaviour _behaviour;
     private bool _active = false;
 
     private Dictionary<string, EntityComponent> _componentMap = new Dictionary<string, EntityComponent>();
@@ -24,7 +24,7 @@ public class Entity
             if (_gameObject == null)
             {
                 _gameObject = new GameObject(_name);
-                _behaviour = _gameObject.AddComponent<CommonBehaviour>();
+                _behaviour = _gameObject.AddComponent<EntityBehaviour>();
                 _behaviour.AttachedEntity = this;
                 //_behaviour.enabled = _active;
                 //_gameObject.SetActive(_active);
@@ -156,6 +156,8 @@ public class Entity
                 return new SpriteEntityComponent(this);
             case "StaticPolygon":
                 return new StaticPolygonEntityComponent(this);
+            case "Interactive":
+                return new InteractiveEntityComponent(this);
             default:
                 Debug.LogWarning("Unknown AddComponent: " + cName);
                 return new EntityComponent(this);

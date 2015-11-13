@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SpriteBehaviour : EntityBehaviour
+public class SpriteBehaviour : ComponentBehaviour<SpriteEntityComponent>
 {
     private SpriteRenderer _renderer;
     private Sprite _sprite;

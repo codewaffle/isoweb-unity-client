@@ -2,7 +2,7 @@
 using SimpleJSON;
 using UnityEngine;
 
-internal class StaticPolygonEntityComponent : EntityComponent
+public class StaticPolygonEntityComponent : EntityComponent
 {
     public StaticPolygonEntityComponent(Entity ent) : base(ent)
     {

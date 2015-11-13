@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using SimpleJSON;
 
-public class StaticPolygonBehaviour : MonoBehaviour
+public class StaticPolygonBehaviour : ComponentBehaviour<StaticPolygonEntityComponent>
 {
     private Mesh _mesh;
     private MeshRenderer _renderer;

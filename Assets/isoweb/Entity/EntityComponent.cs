@@ -2,6 +2,9 @@
 using SimpleJSON;
 using UnityEngine;
 
+/// <summary>
+/// EntityComponents reflect server-side components.
+/// </summary>
 public class EntityComponent
 {
     public Entity AttachedEntity { get; private set; }

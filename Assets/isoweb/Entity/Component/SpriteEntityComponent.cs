@@ -28,7 +28,6 @@ public class SpriteEntityComponent : EntityComponent
         if (_behaviour == null)
         {
             _behaviour = AttachedEntity.GameObject.AddComponent<SpriteBehaviour>();
-            _behaviour.AttachedEntity = AttachedEntity;
             _behaviour.enabled = IsActive;
         }
         _behaviour.SetUrl(url);
