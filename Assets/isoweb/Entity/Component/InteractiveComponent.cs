@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace isoweb.Entity { 
-    public class InteractiveEntityComponent : EntityComponent
+    public class InteractiveComponent : EntityComponent
     {
         private bool _include_position;
 
@@ -10,6 +10,7 @@ namespace isoweb.Entity {
         Collider2D _collider;
         private string _shape;
         private JSONArray _args;
+        InteractiveBehaviour _behaviour;
 
         GameObject InteractiveGameObject
         {
@@ -20,10 +21,12 @@ namespace isoweb.Entity {
         {
             var go = new GameObject("__INTERACTIVE");
             go.transform.parent = AttachedEntity.GameObject.transform;
+            _behaviour = go.AddComponent<InteractiveBehaviour>();
+            _behaviour.Component = this;
             return go;
         }
 
-        public InteractiveEntityComponent(Entity ent) : base(ent)
+        public InteractiveComponent(Entity ent) : base(ent)
         {
         }
 
@@ -94,11 +97,6 @@ namespace isoweb.Entity {
         private void SetupCollider()
         {
             InteractiveGameObject.layer = 8;
-        }
-
-        void OnMouseOver()
-        {
-            Debug.Log("HOLEE CRAP");
         }
     }
 }

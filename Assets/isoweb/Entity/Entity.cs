@@ -158,7 +158,7 @@ namespace isoweb.Entity
                 case "StaticPolygon":
                     return new StaticPolygonEntityComponent(this);
                 case "Interactive":
-                    return new InteractiveEntityComponent(this);
+                    return new InteractiveComponent(this);
                 default:
                     Debug.LogWarning("Unknown AddComponent: " + cName);
                     return new EntityComponent(this);

@@ -55,8 +55,7 @@ namespace isoweb.Entity
                     AttachedEntity.SetPosition(lerp.x, lerp.y, lerp.z);
 
                     // TODO : monitor queue size - we want it to be small (1-2) but probably depends on client latency.
-
-                    yield return null;
+                    yield return new WaitForEndOfFrame();
                 }
                 AttachedEntity.SetPosition(_nextUpdate.x, _nextUpdate.y, _nextUpdate.z);
             }
