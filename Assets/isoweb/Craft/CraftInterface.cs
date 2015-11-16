@@ -12,6 +12,7 @@ namespace isoweb
         void Start()
         {
             transform.parent = Global.UICanvas.transform;
+
             Debug.Log("Registering CraftInterface");
             Global.CraftInterface = this;
         }
@@ -20,6 +21,12 @@ namespace isoweb
         {
             CraftRecipe recipe;
 
+        }
+
+        void Update()
+        {
+            var rt = (RectTransform)transform;
+            rt.anchoredPosition = Vector2.zero;
         }
     }
 
