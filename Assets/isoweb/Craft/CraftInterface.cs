@@ -7,8 +7,6 @@ namespace isoweb
 {
     public class CraftInterface : MonoBehaviour
     {
-        protected Dictionary<ulong, CraftRecipe> _recipes;
-
         void Start()
         {
             transform.parent = Global.UICanvas.transform;
@@ -17,10 +15,9 @@ namespace isoweb
             Global.CraftInterface = this;
         }
 
-        public void UpdateRecipe(ulong hash, JSONNode data)
+        void OnEnable()
         {
-            CraftRecipe recipe;
-
+            Debug.Log("OnEnable");
         }
 
         void Update()
@@ -28,11 +25,5 @@ namespace isoweb
             var rt = (RectTransform)transform;
             rt.anchoredPosition = Vector2.zero;
         }
-    }
-
-    public class CraftRecipe
-    {
-        public ulong Hash;
-        public string Name;
     }
 }

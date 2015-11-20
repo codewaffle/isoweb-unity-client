@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace isoweb
 {
@@ -16,10 +17,11 @@ namespace isoweb
         void Update () {
             if (Input.GetMouseButtonDown(0))
             {
-                StartDrag();
+                if(!EventSystem.current.IsPointerOverGameObject())
+                    StartDrag();
             }
 
-            if (Input.GetMouseButton(0))
+            if (_dragging && Input.GetMouseButton(0))
             {
                 PerformDrag();
             }
