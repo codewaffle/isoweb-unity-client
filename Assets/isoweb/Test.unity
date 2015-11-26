@@ -114,8 +114,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultMaterial: {fileID: 2100000, guid: 08cb1f13c22c32345b8130eec977bfed, type: 2}
   UICanvas: {fileID: 375316889}
-  SystemPrefabs:
-  - {fileID: 121684, guid: b7632c285b4b91c4099af2a6925ad7d2, type: 2}
+  SystemPrefabs: []
+  CanvasPrefabs:
+  - {fileID: 22478002, guid: b7632c285b4b91c4099af2a6925ad7d2, type: 2}
 --- !u!4 &229721247
 Transform:
   m_ObjectHideFlags: 0
@@ -236,7 +237,6 @@ GameObject:
   - 224: {fileID: 375316890}
   - 223: {fileID: 375316889}
   - 114: {fileID: 375316888}
-  - 114: {fileID: 375316887}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -244,22 +244,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &375316887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 375316886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1301386320, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &375316888
 MonoBehaviour:
   m_ObjectHideFlags: 0

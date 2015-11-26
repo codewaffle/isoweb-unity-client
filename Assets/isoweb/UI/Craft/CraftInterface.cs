@@ -9,8 +9,6 @@ namespace isoweb
     {
         void Start()
         {
-            transform.parent = Global.UICanvas.transform;
-
             Debug.Log("Registering CraftInterface");
             Global.CraftInterface = this;
         }

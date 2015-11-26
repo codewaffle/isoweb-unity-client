@@ -9,6 +9,8 @@ namespace isoweb
         public Canvas UICanvas;
         public GameObject[] SystemPrefabs;
 
+        [SerializeField] private RectTransform[] CanvasPrefabs;
+
         void Start ()
         {
             Config.DefaultMaterial = DefaultMaterial;
@@ -18,6 +20,12 @@ namespace isoweb
             foreach (var x in SystemPrefabs)
             {
                 Debug.Log("Instantiated: " + x, Instantiate(x));
+            }
+
+            foreach (var x in CanvasPrefabs)
+            {
+                var cp = (RectTransform) Instantiate(x);
+                cp.SetParent(UICanvas.transform, false);
             }
 
 
