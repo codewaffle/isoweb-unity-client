@@ -283,5 +283,12 @@ namespace isoweb
             pb.PushByte((byte)PacketType.CRAFT_LIST);
             webSocket.Send(pb.Build());
         }
+
+        public void RequestCraftRecipe(string hash)
+        {
+            pb.PushByte((byte)PacketType.CRAFT_VIEW);
+            pb.PushHash(hash);
+            webSocket.Send(pb.Build());
+        }
     }
 }
