@@ -7,5 +7,6 @@ namespace isoweb
     {
         public static CraftInterface CraftInterface;
         public static Canvas UICanvas;
+        public static Client Client;
     }
 }

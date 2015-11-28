@@ -22,14 +22,21 @@ namespace isoweb
         private double _rt_total;
         private double _offset_total;
 
+        Dictionary<PacketType, Action<PacketReader>> _packetHandlers = new Dictionary<PacketType, Action<PacketReader>>(); 
+
         void Awake()
         {
-            if(Config.Client != null)
+            if(Global.Client != null)
                 Debug.LogError("UGH WHY");
 
-            Config.Client = this;
+            Global.Client = this;
             pb = new PacketBuilder();
             pr = new PacketReader();
+        }
+
+        public void RegisterPacketHandler(PacketType packetType, Action<PacketReader> action)
+        {
+            _packetHandlers[packetType] = action;
         }
 
         void RequestTimeSync()
@@ -73,6 +80,8 @@ namespace isoweb
 
         private void HandleMessage()
         {
+            Action<PacketReader> messageAction;
+
             var packetType = pr.ReadPacketType();
 
             while (packetType != 0)
@@ -103,8 +112,15 @@ namespace isoweb
                         HandleEntityUpdate();
                         break;
                     default:
-                        Debug.LogError("UNKNOWN PACKET: " + packetType);
-                        Debug.Break();
+                        if (_packetHandlers.TryGetValue(packetType, out messageAction))
+                        {
+                            messageAction(pr);
+                        }
+                        else
+                        {
+                            Debug.LogError("UNKNOWN PACKET: " + packetType);
+                            Debug.Break();
+                        }
                         break;
                 }
 
@@ -259,6 +275,12 @@ namespace isoweb
             pb.PushByte((byte)PacketType.CMD_CONTEXTUAL_POSITION);
             pb.PushFloat32(x);
             pb.PushFloat32(y);
+            webSocket.Send(pb.Build());
+        }
+
+        public void RequestCraftList()
+        {
+            pb.PushByte((byte)PacketType.CRAFT_LIST);
             webSocket.Send(pb.Build());
         }
     }

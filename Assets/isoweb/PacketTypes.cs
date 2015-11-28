@@ -34,6 +34,11 @@
 
         CONTAINER_UPDATE = 130,
         CONTAINER_SHOW = 131,
-        CONTAINER_HIDE = 132
+        CONTAINER_HIDE = 132,
+
+        CRAFT_LIST = 140,
+        CRAFT_VIEW = 141,
+        CRAFT_EXEC = 142
+
     }
 }

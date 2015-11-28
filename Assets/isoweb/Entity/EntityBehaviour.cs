@@ -36,7 +36,7 @@ namespace isoweb.Entity
                 _prevUpdate = _nextUpdate;
                 _nextUpdate = _updateQueue.Dequeue();
 
-                while (Config.Client.ServerTime < _nextUpdate.w)
+                while (Global.Client.ServerTime < _nextUpdate.w)
                 {
                     var diff = _nextUpdate.w - _prevUpdate.w;
 
@@ -47,7 +47,7 @@ namespace isoweb.Entity
                         _prevUpdate.w = _nextUpdate.w - diff;
                     }
 
-                    var ratio = (Config.Client.ServerTime - _prevUpdate.w) / diff;
+                    var ratio = (Global.Client.ServerTime - _prevUpdate.w) / diff;
                     var lerp = Vector4.Lerp(_prevUpdate, _nextUpdate, ratio);
 
                     // re-lerp rotation to avoid huge spins

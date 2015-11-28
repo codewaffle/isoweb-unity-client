@@ -37,7 +37,7 @@ namespace isoweb
             if (_moving &&  Time.time > _nextMove)
             {
                 var clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Config.Client.SendCmdContextualPosition(clickPos.x, clickPos.y);
+                Global.Client.SendCmdContextualPosition(clickPos.x, clickPos.y);
                 _nextMove = Time.time + 0.05f;
             
             }

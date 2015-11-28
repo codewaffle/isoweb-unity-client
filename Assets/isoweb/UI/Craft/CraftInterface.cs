@@ -11,6 +11,22 @@ namespace isoweb
         {
             Debug.Log("Registering CraftInterface");
             Global.CraftInterface = this;
+            Global.Client.RegisterPacketHandler(PacketType.CRAFT_LIST, UpdateCraftList);
+            Global.Client.RegisterPacketHandler(PacketType.CRAFT_VIEW, UpdateCraftView);
+        }
+
+        private void UpdateCraftView(PacketReader pr)
+        {
+
+        }
+
+        private void UpdateCraftList(PacketReader pr)
+        {
+            var obj = pr.ReadJsonObject();
+            foreach (JSONArray rec in obj.AsArray)
+            {
+                Debug.Log(rec);
+            }
         }
 
         void OnEnable()
@@ -22,6 +38,11 @@ namespace isoweb
         {
             var rt = (RectTransform)transform;
             rt.anchoredPosition = Vector2.zero;
+        }
+
+        void OnExpandTab()
+        {
+            Global.Client.RequestCraftList();
         }
     }
 }

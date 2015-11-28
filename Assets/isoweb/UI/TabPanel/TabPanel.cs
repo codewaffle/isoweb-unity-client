@@ -113,6 +113,8 @@ public class TabPanel : MonoBehaviour
                 break;
         }
         _collapsed = true;
+
+        BroadcastMessage("OnCollapseTab", SendMessageOptions.DontRequireReceiver);
     }
 
     void ExpandTab(bool instant=false)
@@ -138,6 +140,8 @@ public class TabPanel : MonoBehaviour
                 break;
         }
         _collapsed = false;
+
+        BroadcastMessage("OnExpandTab", SendMessageOptions.DontRequireReceiver);
     }
 
     public void ToggleTab()
