@@ -25,8 +25,11 @@ namespace isoweb
     public class CraftInterface : MonoBehaviour
     {
         public RectTransform RecipeButtonPrefab;
+        public RectTransform ExecuteButton;
 
         Dictionary<string, RecipeData> _recipeData = new Dictionary<string, RecipeData>();
+        RecipeData _currentRecipeData = null;
+
         private Transform _recipeListContent;
         private Transform _infoRoot;
         private Text _infoName;
@@ -47,6 +50,7 @@ namespace isoweb
             _infoDesc = _infoRoot.FindFirstRecursive("ItemDescription").GetComponent<Text>();
             _infoConsumes = _infoRoot.FindFirstRecursive("ItemIngredients").GetComponent<Text>();
             _infoTools = _infoRoot.FindFirstRecursive("ItemTools").GetComponent<Text>();
+            ClearRecipe();
         }
 
         private void UpdateCraftView(PacketReader pr)
@@ -112,6 +116,15 @@ namespace isoweb
             _infoDesc.text = data.Description;
             _infoConsumes.text = "";
             _infoTools.text = "";
+            _currentRecipeData = data;
+            ExecuteButton.gameObject.SetActive(true);
+        }
+
+        private void ClearRecipe()
+        {
+            _infoName.text = _infoDesc.text = _infoConsumes.text = _infoTools.text = "";
+            ExecuteButton.gameObject.SetActive(false);
+            _currentRecipeData = null;
         }
 
         IEnumerator LoadRecipe(RecipeData data)
@@ -144,6 +157,11 @@ namespace isoweb
         void OnExpandTab()
         {
             Global.Client.RequestCraftList();
+        }
+
+        public void OnExecuteClicked()
+        {
+            Global.Client.RequestCraftExecute(_currentRecipeData.Hash);
         }
     }
 }

@@ -290,5 +290,12 @@ namespace isoweb
             pb.PushHash(hash);
             webSocket.Send(pb.Build());
         }
+
+        public void RequestCraftExecute(string hash)
+        {
+            pb.PushByte((byte) PacketType.CRAFT_EXEC);
+            pb.PushHash(hash);
+            webSocket.Send(pb.Build());
+        }
     }
 }

@@ -12,12 +12,19 @@ namespace isoweb.Entity
         void Awake()
         {
             _renderer = gameObject.AddComponent<MeshRenderer>();
+            _renderer.material.mainTexture = new Texture2D(1,1,TextureFormat.RGB24, true);
             _meshFilter = gameObject.AddComponent<MeshFilter>();
         }
 	
         public void SetTextureUrl(string url)
         {
-            AssetManager.Fetch(url, www => _renderer.material.mainTexture = www.texture);
+            AssetManager.Fetch(url, www =>
+            {
+                var tex = new Texture2D(1,1, TextureFormat.RGB24, false);
+                //tex.Apply(true);
+                www.LoadImageIntoTexture(tex);
+                _renderer.material.mainTexture = tex;
+            });
         }
 
         public void SetPoints(Vector2[] points)

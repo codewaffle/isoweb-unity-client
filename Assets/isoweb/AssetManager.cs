@@ -37,7 +37,6 @@ namespace isoweb
             {
                 callback(www);
             }
-
         }
 
         public static void Fetch(string url, AssetCallback callback)

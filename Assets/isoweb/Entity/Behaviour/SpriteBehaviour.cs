@@ -12,17 +12,23 @@ namespace isoweb.Entity
         {
             _url = url;
 
-            AssetManager.Fetch(url, www => SetTexture(www.texture));
+            AssetManager.Fetch(url, www =>
+            {
+                var tex = new Texture2D(1,1, TextureFormat.RGBA32, true);
+                www.LoadImageIntoTexture(tex);
+                SetTexture(tex);
+            });
         }
 
         void OnEnable()
         {
-            if(_url != null)
-                AssetManager.Fetch(_url, www => SetTexture(www.texture));
+            if (_url != null)
+                SetUrl(_url);
         }
 
         private void SetTexture(Texture2D texture)
         {
+            texture.Apply(true);
             if (_renderer == null)
             {
                 _renderer = gameObject.AddComponent<SpriteRenderer>();
@@ -30,6 +36,7 @@ namespace isoweb.Entity
             }
 
             _renderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one*0.5f, 128f);
+            //_renderer.sprite.texture.Apply(true);
         }
     }
 }
